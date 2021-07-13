@@ -13,18 +13,24 @@ pd.set_option('max_colwidth',200)
 pd.set_option('expand_frame_repr', False)
 
 
-class WebServiceQos():
-    def __init__(self,path_str,type_str):
+class QoSMatrix():
+    def __init__(self,path_str):
         self.path_str = path_str
-        self.rawDF = pd.read_csv(self.path_str,delimiter='\t')
+        self.DF = self.markNull_rawDF()
+
+    def markNull_rawDF(self):
+        rawDF = pd.read_csv(self.path_str, delimiter='\t')
+        bool_array = rawDF.applymap(lambda x: x!=-1 )
+        return rawDF[bool_array]
 
 
-    def cognition(self):
-        pass
 
     def qualityAnalysis(self):
         pass
-
+        #关注缺失值
+        self.DF.isnull.sum().sort_values(ascending=False).reset_index()
+        #关注重复值
+        self.DF.duplicated()
 
 
 
@@ -40,6 +46,5 @@ class WebServiceQos():
 
 if __name__ == "__main__":
 
-    #rtMatrix = WebServiceQos('../../data/webService/dataset1/rtMatrix.txt')
-    usersInfo = WebServiceQos('../../data/webService/dataset1/userlist.txt')
-    print(usersInfo.rawDF)
+    rtMatrix = QoSMatrix('../../data/webService/dataset1/rtMatrix.txt')
+    print(rtMatrix.DF)

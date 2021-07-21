@@ -1,4 +1,6 @@
 import numpy as np    # Python中进行数值计算的库
+from matplotlib import pyplot as plt
+import matplotlib
 import pandas as pd    # Python中进行数据处理的库
 import warnings
 warnings.filterwarnings('ignore') #  忽略弹出的warnings
@@ -23,17 +25,18 @@ class QoSMatrix():
         bool_array = rawDF.applymap(lambda x: x!=-1 )
         return rawDF[bool_array]
 
+class QoSItem():
+    def __init__(self,path_str):
+        self.path_str = path_str
+        self.DF = self.load_items()
 
-
-    def qualityAnalysis(self):
-        pass
-        #关注缺失值
-        self.DF.isnull.sum().sort_values(ascending=False).reset_index()
-        #关注重复值
-        self.DF.duplicated()
-
-
-
+    def load_items(self):
+        rawDF = pd.read_csv(self.path_str, delimiter='\t')
+        # 删除第一列
+        rawDF = rawDF.drop([0]).reset_index(drop=True)
+        # 列名修饰
+        rawDF.rename(columns=lambda x:x.replace('[','').replace(']',''),inplace=True)
+        return rawDF
 
 
 
@@ -46,5 +49,16 @@ class QoSMatrix():
 
 if __name__ == "__main__":
 
+    '''
     rtMatrix = QoSMatrix('../../data/webService/dataset1/rtMatrix.txt')
     print(rtMatrix.DF)
+    '''
+    users = QoSItem('../../data/webService/dataset1/userlist.txt');
+
+    #print(users.DF)
+
+    #users.DF['Country'].value_counts().plot()
+    webServices = QoSItem('../../data/webService/dataset1/wslist.txt');
+    print(webServices.DF)
+
+
